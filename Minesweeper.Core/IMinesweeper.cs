@@ -64,6 +64,33 @@ namespace Minesweeper.Core
         /// <param name="x">x座標(列)</param>
         void RaiseFlag(int y, int x);
 
+        /// <summary>
+        /// 指定したマスの(ユーザが見える)情報を取得する。
+        /// </summary>
+        /// <param name="y">y座標(行)</param>
+        /// <param name="x">x座標(列)</param>
+        /// <returns>
+        /// 0-8 : 開いているマスで、隣接する地雷の数
+        /// -1  : 開いていないし、旗も立ててない。
+        /// -2  : 空いていないマスで、旗を立てている
+        /// -3  : 地雷を踏んでる。
+        /// </returns>
+        int GetGridData(int y, int x);
+
+        /// <summary>
+        /// 指定したマスの(ユーザが見える)情報を取得する。
+        /// List版
+        /// </summary>              
+        /// <param name="ys">y座標(行)</param>
+        /// <param name="xs">x座標(列)</param>
+        /// <returns>
+        /// 0-8 : 開いているマスで、隣接する地雷の数
+        /// -1  : 開いていないし、旗も立ててない。
+        /// -2  : 空いていないマスで、旗を立てている
+        /// -3  : 地雷を踏んでる。
+        /// </returns>
+        List<int> GetGridData(List<int> ys, List<int> xs);
+
         #endregion
     }
 

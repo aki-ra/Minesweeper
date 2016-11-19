@@ -242,6 +242,28 @@ namespace Minesweeper.Core
             return;
         }
 
+        public int GetGridData(int y, int x)
+        {
+            var cell = this.map[f(y, x)];
+            if (cell.HasFlag(GridInfo.Flag)) return (int)VisibleState.Flag;
+            if (cell.HasFlag(GridInfo.Mine) && cell.HasFlag(GridInfo.Clear))
+            {
+                return (int)VisibleState.Mine;
+            }
+            if (!cell.HasFlag(GridInfo.Clear)) return (int)VisibleState.Plain;
+            //else
+            return this.mineCountMap[f(y, x)];
+        }
+
+        public List<int> GetGridData(List<int> ys, List<int> xs)
+        {
+            var ret = new List<int>();
+            foreach(var item in ys.Zip(xs, (y, x) => new { Y = y, X = x }))
+            {
+                ret.Add(GetGridData(item.Y, item.X));
+            }
+            return ret;
+        }
         #endregion
     }
  

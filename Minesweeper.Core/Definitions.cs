@@ -44,4 +44,11 @@ namespace Minesweeper.Core
         public const int MaxWidth = 50; //マップの最大列数
         public const int MinMines = 1; //マップの最小地雷数
     }
+
+    public enum VisibleState
+    {
+        Plain = -1,
+        Flag = -2,
+        Mine = -3
+    }
 }
