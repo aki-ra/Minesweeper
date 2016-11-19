@@ -82,7 +82,7 @@ namespace Minesweeper.Core
 
         #endregion
 
-        #region メソッド
+        #region privateなメソッド
 
         /// <summary>
         /// 地雷マップ初期化
@@ -110,6 +110,51 @@ namespace Minesweeper.Core
             }
         }
 
+        private void OpenCell(int idx)
+        {                             
+            #region 開けられないマスチェック
+            if (this.map[idx].HasFlag(GridInfo.Mine)) return;
+            if (this.map[idx].HasFlag(GridInfo.Clear)) return;
+            if (this.map[idx].HasFlag(GridInfo.Flag)) return;
+            #endregion
+
+            this.map[idx] |= GridInfo.Clear;
+
+            #region 周辺8マスを再帰的に開けていく
+            OpenCell(u(l(idx)));
+            OpenCell(u(idx));
+            OpenCell(u(r(idx)));
+            OpenCell(l(idx));
+            OpenCell(r(idx));
+            OpenCell(b(l(idx)));
+            OpenCell(b(idx));
+            OpenCell(b(r(idx)));
+            #endregion
+        }
+
+        private void GameOverCheck()
+        {
+            // 間違ったFlagあったらクリアしていない
+            if (this.map.Where(x =>
+                 x.HasFlag(GridInfo.Flag) &&
+                 !x.HasFlag(GridInfo.Mine)
+                ).Count() > 0) return;
+
+            // 地雷の数
+            int mine = this.map                 
+                .Where(x =>x.HasFlag(GridInfo.Mine)).Count();
+            // 開いたマスの数
+            var clear = this.map
+                .Where(x => x.HasFlag(GridInfo.Clear)).Count();
+            // 開いたマス+地雷の数 = 全マスならゲームクリア
+            if(mine + clear == this.map.Count())
+            {
+                state |= GameState.GameOver;
+            }
+
+            return;
+        }
+
         #endregion
 
         #endregion
@@ -125,12 +170,38 @@ namespace Minesweeper.Core
         }
         public int Challenge(int y, int x)
         {
+            #region ゲーム状態チェック
+            if (state.HasFlag(GameState.Dead)) throw new InvalidOperationException();
+            if (state.HasFlag(GameState.GameOver)) throw new InvalidOperationException();
+            #endregion
+
+            var score = Check(y, x);
+            if(score == (int)Score.None)
+            {
+                return score;
+            }
+            if (score == (int)Score.Dead)
+            {
+                state |= GameState.Dead;             // ステータス更新
+                this.map[f(y, x)] |= GridInfo.Clear; // マスを開く
+                return score;
+            }
+            if(score == (int)Score.Clear)
+            {
+                OpenCell(f(y, x));
+                GameOverCheck();
+                return score;
+            }
+            
             return 0;
         }
 
         public int Check(int y, int x)
         {
-            return 0;
+            int idx = f(y, x);
+            if (this.map[idx].HasFlag(GridInfo.Clear)) return (int)Score.None;// すでに開いている
+            else if (this.map[idx].HasFlag(GridInfo.Mine)) return (int)Score.Dead;// 地雷を踏みぬいた
+            else return (int)Score.Clear; // 開いていないクリーンなマス。
         }
 
         /// <summary>
@@ -148,15 +219,26 @@ namespace Minesweeper.Core
             m = mine.Within(Settings.MinMines, Settings.MaxWidth * Settings.MaxHeight - 1);
             #endregion
 
-            InitMap(h, w, m, seed); //マップを再設定
-
-            this.state = GameState.Alive; // ゲーム状態を生存にセット
-
-            return;
+            InitMap(h, w, m, seed); //マップを再設定  
         }      
 
         public void RaiseFlag(int y, int x)
-        {
+        {      
+            #region ゲーム状態チェック
+            if (state.HasFlag(GameState.Dead)) throw new InvalidOperationException();
+            if (state.HasFlag(GameState.GameOver)) throw new InvalidOperationException();
+            #endregion
+
+            var idx = f(y, x);
+
+            // 空いている場合何もしない
+            if (this.map[idx].HasFlag(GridInfo.Clear)) return;
+            // 旗があれば解除し、なければつける。
+            if (this.map[idx].HasFlag(GridInfo.Flag))
+            {
+                this.map[idx] = this.map[idx] & ~GridInfo.Flag;
+            }
+            this.map[idx] |= GridInfo.Flag;
             return;
         }
 

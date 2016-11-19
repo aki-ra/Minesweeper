@@ -10,10 +10,9 @@ namespace Minesweeper.Core
     /// ゲームの進行状態
     /// </summary>
     public enum GameState
-    {
-        Alive,
+    {                 
         Dead,
-        Clear,
+        GameOver,
     }
 
     /// <summary>
@@ -25,6 +24,13 @@ namespace Minesweeper.Core
         Flag,  // 旗を立てたマス
         Clear, // 踏破済みのマス
         Mine,  // 地雷マス         
+    }
+
+    public enum Score
+    {
+        None = 0,
+        Dead = -10,
+        Clear = 1,     
     }
 
     /// <summary>
