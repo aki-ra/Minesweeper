@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Minesweeper.cs" />
     <Compile Include="IMinesweeper.cs" />
