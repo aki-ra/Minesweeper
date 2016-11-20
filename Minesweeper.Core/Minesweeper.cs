@@ -26,46 +26,20 @@ namespace Minesweeper.Core
         #endregion
 
         #region 隣接マスのインデックス取得
+        
         /// <summary>
-        /// ひとつ左のインデックスを返す。
+        /// シフトしたインデックスを返す。
         /// 範囲外の場合は自身を返す。
         /// </summary>
-        Func<int, int> l = (z =>
-        {
-            int x = z % width;
-            if (x > 0) return z - 1;
-            else return z;
-        });
-        /// <summary>
-        /// ひとつ右のインデックスを返す。
-        /// 範囲外の場合は自身を返す。
-        /// </summary>
-        Func<int, int> r = (z =>
-        {
-            int x = z % width;
-            if (x < width - 1) return z + 1;
-            else return z;
-        });
-        /// <summary>
-        /// ひとつ上のインデックスを返す。
-        /// 範囲外の場合は自身を返す。
-        /// </summary>
-        Func<int, int> u = (z =>
+        Func<int, int, int, int> shift = (z, sy, sx) =>
         {
             int y = z / width;
-            if (y > 0) return z - width;
-            else return z;
-        });
-        /// <summary>
-        /// ひとつ下のインデックスを返す。
-        /// 範囲外の場合は自身を返す。
-        /// </summary>
-        Func<int, int> b = (z =>
-        {
-            int y = z / width;
-            if (y < height - 1) return z + width;
-            else return z;
-        });
+            int x = z % width;
+            if((sy + y).Within(0, height - 1) != sy + y) { return z; }  
+            if((sx + x).Within(0, width - 1) != sx + x) { return z; }
+            return z + sx + sy * width;
+
+        };
         #endregion
 
         #endregion
@@ -112,16 +86,16 @@ namespace Minesweeper.Core
             foreach (var idx in Common.UniqueRandomInt(m, 0, h * w, s))
             {
                 this.map[idx] = 0; //初期化 
-                this.map[idx] |= GridInfo.Mine; // 地雷を設置
-                this.mineCountMap[u(l(idx))]++; // 地雷マスの左上のカウント++ 
-                this.mineCountMap[u(idx)]++; // 地雷マスの上のカウント++ 
-                this.mineCountMap[u(r(idx))]++; // 地雷マスの右上のカウント++ 
-                this.mineCountMap[l(idx)]++; // 地雷マスの左のカウント++ 
-                this.mineCountMap[r(idx)]++; // 地雷マスの右のカウント++ 
-                this.mineCountMap[b(l(idx))]++; // 地雷マスの左下のカウント++ 
-                this.mineCountMap[b(idx)]++; // 地雷マスの下のカウント++ 
-                this.mineCountMap[b(l(idx))]++; // 地雷マスの右下のカウント++ 
-                this.mineCountMap[idx] = -1; // 地雷マスのカウントリセット(上の処理の副作用でインクリメントされているので。) 
+                this.map[idx] |= GridInfo.Mine; // 地雷を設置                                  
+
+                this.mineCountMap[shift(idx, -1, -1)]++; // 地雷マスの左上のカウント++ 
+                this.mineCountMap[shift(idx, -1,  0)]++; // 地雷マスの上のカウント++ 
+                this.mineCountMap[shift(idx, -1,  1)]++; // 地雷マスの右上のカウント++ 
+                this.mineCountMap[shift(idx,  0, -1)]++; // 地雷マスの左のカウント++ 
+                this.mineCountMap[shift(idx,  0,  1)]++; // 地雷マスの右のカウント++ 
+                this.mineCountMap[shift(idx,  1, -1)]++; // 地雷マスの左下のカウント++ 
+                this.mineCountMap[shift(idx,  1,  0)]++; // 地雷マスの下のカウント++ 
+                this.mineCountMap[shift(idx,  1,  1)]++; // 地雷マスの右下のカウント++                                       
             }
         }
 
@@ -138,14 +112,14 @@ namespace Minesweeper.Core
             #region 周辺8マスにひとつも地雷がなければ再帰的に開けていく
             if(this.mineCountMap[idx] == 0)
             {
-                OpenCell(u(l(idx)));
-                OpenCell(u(idx));
-                OpenCell(u(r(idx)));
-                OpenCell(l(idx));
-                OpenCell(r(idx));
-                OpenCell(b(l(idx)));
-                OpenCell(b(idx));
-                OpenCell(b(r(idx)));   
+                OpenCell(shift(idx, -1, -1));
+                OpenCell(shift(idx, -1,  0));
+                OpenCell(shift(idx, -1,  1));
+                OpenCell(shift(idx,  0, -1));
+                OpenCell(shift(idx,  0,  1));
+                OpenCell(shift(idx,  1, -1));
+                OpenCell(shift(idx,  1,  0));
+                OpenCell(shift(idx,  1,  1));
             }
             #endregion
         }
