@@ -6,7 +6,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:v="clr-namespace:Minesweeper.Views"
         xmlns:vm="clr-namespace:Minesweeper.ViewModels"
-        Title="MainWindow" SizeToContent="WidthAndHeight"  ResizeMode="NoResize"
+        Title="Minsesweeper" SizeToContent="WidthAndHeight"  ResizeMode="NoResize"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Minesweeper.Views"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -41,6 +41,7 @@
 
     </i:Interaction.Triggers>
 
+    <!-- ここからButtonを並べて表示する処理。詳しくはGridHelper.csに書いたコメントのリンク先参照 -->
     <ItemsControl ItemsSource="{Binding Cells}">
         <!-- ItemsPanelTemplate -->
         <ItemsControl.ItemsPanel>
@@ -62,10 +63,11 @@
         <!-- ItemTemplate -->
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Button Content="{Binding Name, Mode=OneWay}" DataContext="{Binding Mode=OneWay}" Width="30" Height ="30"/>
+                <Button Style="{DynamicResource MaterialDesignLightRaisedButton}" Content="{Binding Name, Mode=OneWay}" DataContext="{Binding Mode=OneWay}" Width="40" Height ="40" FontSize="11"  />
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>
+    <!-- ここまで -->
 
 
 </Window>

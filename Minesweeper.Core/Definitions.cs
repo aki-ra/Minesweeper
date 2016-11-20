@@ -39,9 +39,9 @@ namespace Minesweeper.Core
     /// </summary>
     public static class Settings
     {
-        public const int MinHeight = 5;  //マップの最小行数
+        public const int MinHeight = 4;  //マップの最小行数
         public const int MaxHeight = 50;  //マップの最小行数
-        public const int MinWidth = 5;  //マップの最小列数
+        public const int MinWidth = 4;  //マップの最小列数
         public const int MaxWidth = 50; //マップの最大列数
         public const int MinMines = 1; //マップの最小地雷数
     }

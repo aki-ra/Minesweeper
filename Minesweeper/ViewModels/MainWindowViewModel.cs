@@ -128,7 +128,7 @@ namespace Minesweeper.ViewModels
             {
                 get
                 {                          
-                    if (IsFlag) name = "F";
+                    if (IsFlag) name = "🚩";
                     if (NumberAdjacentMines > 0) name = NumberAdjacentMines.ToString();
                     return name;
                 }   

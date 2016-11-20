@@ -8,6 +8,14 @@ using System.Windows.Controls;
 
 namespace Minesweeper.Views
 {
+    // Collectionの数に応じてGridの行数・列数を自動で変化させる方法調べたけど、
+    // どうやら素のWPFでは無理っぽい。
+    // 以下のページを丸パクリして実装。詳細についてもリンク先を読んで下さい。
+    // http://stackoverflow.com/questions/13587311/dynamicly-create-a-playboard-for-minesweeper-game
+    // https://rachel53461.wordpress.com/2011/09/17/wpf-grids-rowcolumn-count-properties/
+    // https://rachel53461.wordpress.com/2011/09/17/wpf-itemscontrol-example/
+    // 注 : ObservableCollection<独自クラス>の時、メンバへのアクセスはDataContextを明示する必要があった。
+    // 上のブログには書いてないし、質問されても頑なにコード見せないけど何なんだろう・・
     public class GridHelpers
     {
         #region RowCount Property
