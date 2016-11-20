@@ -19,8 +19,9 @@ namespace Minesweeper.Core
     /// マスの状態
     /// </summary>
     [Flags]
-    public enum GridInfo : byte
-    {                       
+    public enum GridInfo :int
+    {                
+        None,  // 未初期化       
         Flag,  // 旗を立てたマス
         Clear, // 踏破済みのマス
         Mine,  // 地雷マス         
@@ -38,9 +39,9 @@ namespace Minesweeper.Core
     /// </summary>
     public static class Settings
     {
-        public const int MinHeight = 2;  //マップの最小行数
+        public const int MinHeight = 5;  //マップの最小行数
         public const int MaxHeight = 50;  //マップの最小行数
-        public const int MinWidth = 2;  //マップの最小列数
+        public const int MinWidth = 5;  //マップの最小列数
         public const int MaxWidth = 50; //マップの最大列数
         public const int MinMines = 1; //マップの最小地雷数
     }

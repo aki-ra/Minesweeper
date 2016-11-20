@@ -67,7 +67,7 @@ namespace Minesweeper.Core
             else return z;
         });
         #endregion
-                         
+
         #endregion
 
         #region フィールド
@@ -77,6 +77,20 @@ namespace Minesweeper.Core
             get
             {
                 return this.state;
+            }
+        }
+        public int Width
+        {
+            get
+            {
+                return Minesweeper.width;
+            }
+        }
+        public int Height
+        {
+            get
+            {
+                return Minesweeper.height;
             }
         }
 
@@ -97,6 +111,7 @@ namespace Minesweeper.Core
             this.mineCountMap = new int[h * w];
             foreach (var idx in Common.UniqueRandomInt(m, 0, h * w, s))
             {
+                this.map[idx] = 0; //初期化 
                 this.map[idx] |= GridInfo.Mine; // 地雷を設置
                 this.mineCountMap[u(l(idx))]++; // 地雷マスの左上のカウント++ 
                 this.mineCountMap[u(idx)]++; // 地雷マスの上のカウント++ 
@@ -120,15 +135,18 @@ namespace Minesweeper.Core
 
             this.map[idx] |= GridInfo.Clear;
 
-            #region 周辺8マスを再帰的に開けていく
-            OpenCell(u(l(idx)));
-            OpenCell(u(idx));
-            OpenCell(u(r(idx)));
-            OpenCell(l(idx));
-            OpenCell(r(idx));
-            OpenCell(b(l(idx)));
-            OpenCell(b(idx));
-            OpenCell(b(r(idx)));
+            #region 周辺8マスにひとつも地雷がなければ再帰的に開けていく
+            if(this.mineCountMap[idx] == 0)
+            {
+                OpenCell(u(l(idx)));
+                OpenCell(u(idx));
+                OpenCell(u(r(idx)));
+                OpenCell(l(idx));
+                OpenCell(r(idx));
+                OpenCell(b(l(idx)));
+                OpenCell(b(idx));
+                OpenCell(b(r(idx)));   
+            }
             #endregion
         }
 
@@ -168,6 +186,7 @@ namespace Minesweeper.Core
         {
             Start(Settings.MinHeight, Settings.MinWidth, Settings.MinWidth);
         }
+                                            
         public int Challenge(int y, int x)
         {
             #region ゲーム状態チェック
@@ -220,6 +239,9 @@ namespace Minesweeper.Core
             #endregion
 
             InitMap(h, w, m, seed); //マップを再設定  
+
+            Minesweeper.width = w;
+            Minesweeper.height = h;
         }      
 
         public void RaiseFlag(int y, int x)
@@ -239,6 +261,7 @@ namespace Minesweeper.Core
                 this.map[idx] = this.map[idx] & ~GridInfo.Flag;
             }
             this.map[idx] |= GridInfo.Flag;
+            GameOverCheck();
             return;
         }
 
@@ -263,6 +286,22 @@ namespace Minesweeper.Core
                 ret.Add(GetGridData(item.Y, item.X));
             }
             return ret;
+        }
+
+        public List<List<int>> GetAllGridData2d()
+        {                     
+            var map = new List<List<int>>();                      
+            foreach (var x in Enumerable.Range(0, this.Width))
+            {
+                var row = new List<int>();
+                foreach (var y in Enumerable.Range(0, this.Height))
+                {
+                    row.Add(GetGridData(y, x));   
+                }
+                map.Add(row);
+            }
+            return map;
+                             
         }
         #endregion
     }

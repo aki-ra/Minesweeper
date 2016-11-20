@@ -59,8 +59,110 @@ namespace Minesweeper.ViewModels
          * 自動的にUIDispatcher上での通知に変換されます。変更通知に際してUIDispatcherを操作する必要はありません。
          */
 
+
+        private Model model;
+        public Model Model
+        {
+            get
+            {
+                if (model == null) model = new Model();
+                return model;
+            }
+        }          
+
+        public int Width
+        {
+            get
+            {
+                return Model.Width;  
+            }
+        }
+        public int Height
+        {
+            get
+            {
+                return Model.Height;
+            }
+        }
+
+        public int AppWidth
+        {
+            get
+            {
+                return 30 * (int)Width;
+            }
+        }
+        public int AppHeight
+        {
+            get
+            {
+                return 30 * (int)Height;
+            }
+        }
+
+        private ObservableSynchronizedCollection<CellModel> cells;
+        public ObservableSynchronizedCollection<CellModel> Cells
+        {
+            get
+            {
+                if (cells == null) cells = new ObservableSynchronizedCollection<CellModel>();
+                return cells;
+            }
+            set
+            {
+                this.cells = value;
+                RaisePropertyChanged("Cells");
+            }
+        }
+
+        public class CellModel
+        {
+            public int ColumnIndex;
+            public int RowIndex;
+            public bool IsVisible;
+            public bool IsMine;
+            public bool IsFlag;
+            public int NumberAdjacentMines;
+            private string name = string.Empty;
+            public string Name
+            {
+                get
+                {                          
+                    if (IsFlag) name = "F";
+                    if (NumberAdjacentMines > 0) name = NumberAdjacentMines.ToString();
+                    return name;
+                }   
+            }
+        }
+
+
         public void Initialize()
         {
+            this.Cells = new ObservableSynchronizedCollection<CellModel>();
+            var rowIdx = 0;
+            var items = this.Model.GetAllGridData2d();
+            foreach (var row in items)
+            {
+                var colIdx = 0;
+                foreach(var item in row)
+                {
+                    bool isVisible = true;
+                    if (item == -1 || item == -2) isVisible = false;
+                    bool isMine = false;
+                    if (item == -3) isMine = true;
+                    bool isFlag = false;
+                    if (item == -2) isFlag = true;
+                    int num = item;
+                     
+                    Cells.Add(new CellModel() { ColumnIndex = colIdx, RowIndex = rowIdx, IsMine=isMine, IsFlag=isFlag, IsVisible=isVisible, NumberAdjacentMines=num });
+                    colIdx++;
+                }
+                rowIdx++;
+            }                   
         }
+
+
+        
+
     }
 }

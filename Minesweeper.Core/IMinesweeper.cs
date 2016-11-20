@@ -10,7 +10,7 @@ namespace Minesweeper.Core
     /// Minesweeperのインターフェイス定義。
     /// publicなメンバはここですべて定義する。
     /// </summary>
-    interface IMinesweeper
+    public interface IMinesweeper
     {
         #region フィールド
 
@@ -18,6 +18,10 @@ namespace Minesweeper.Core
         /// 現在のゲームの状態を返す
         /// </summary>
         GameState State { get; }
+
+        int Width { get; }
+
+        int Height { get; }
 
         #endregion
 
@@ -90,6 +94,8 @@ namespace Minesweeper.Core
         /// -3  : 地雷を踏んでる。
         /// </returns>
         List<int> GetGridData(List<int> ys, List<int> xs);
+
+        List<List<int>> GetAllGridData2d();
 
         #endregion
     }
