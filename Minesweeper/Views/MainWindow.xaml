@@ -63,7 +63,7 @@
         <!-- ItemTemplate -->
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Button Style="{DynamicResource MaterialDesignLightRaisedButton}" Content="{Binding Name, Mode=OneWay}" DataContext="{Binding Mode=OneWay}" Width="40" Height ="40" FontSize="11"  />
+                <Button Style="{DynamicResource MaterialDesignRaisedLightButton}" Content="{Binding Name, Mode=OneWay}"  Width="40" Height ="40" FontSize="11" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenCommand}" CommandParameter="{Binding pos}" />
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>

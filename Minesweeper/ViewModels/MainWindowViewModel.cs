@@ -12,6 +12,8 @@ using Livet.EventListeners;
 using Livet.Messaging.Windows;
 
 using Minesweeper.Models;
+using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace Minesweeper.ViewModels
 {
@@ -127,14 +129,20 @@ namespace Minesweeper.ViewModels
             public string Name
             {
                 get
-                {                          
+                {
                     if (IsFlag) name = "🚩";
                     if (NumberAdjacentMines > 0) name = NumberAdjacentMines.ToString();
                     return name;
-                }   
+                }
+            }
+            public string pos
+            {
+                get
+                {
+                    return RowIndex.ToString() + "," + ColumnIndex.ToString();
+                }
             }
         }
-
 
         public void Initialize()
         {
@@ -162,7 +170,33 @@ namespace Minesweeper.ViewModels
         }
 
 
-        
+        #region OpenCommand
+        private ListenerCommand<string> openCommand;
+
+        public ICommand OpenCommand
+        {
+            get
+            {
+                if (openCommand == null)
+                {
+                    openCommand = new ListenerCommand<string>(Open);  
+                }
+                return openCommand;
+            }
+        }
+
+        private void Open(string pos)
+        {
+
+            Regex r = new Regex(",");
+            var m = r.Split(pos);
+            this.model.Challenge(Int32.Parse(m.First()), Int32.Parse(m.Last()));
+        }
+        #endregion
+
+
+
+
 
     }
 }
