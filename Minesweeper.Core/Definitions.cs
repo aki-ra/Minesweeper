@@ -19,12 +19,12 @@ namespace Minesweeper.Core
     /// マスの状態
     /// </summary>
     [Flags]
-    public enum GridInfo :int
+    public enum GridInfo
     {                
-        None,  // 未初期化       
-        Flag,  // 旗を立てたマス
-        Clear, // 踏破済みのマス
-        Mine,  // 地雷マス         
+        None　=0x00,  // 未初期化       
+        Flag = 0x01,  // 旗を立てたマス
+        Clear = 0x02, // 踏破済みのマス
+        Mine = 0x04,  // 地雷マス         
     }
 
     public enum Score
